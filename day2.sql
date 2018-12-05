@@ -31,7 +31,7 @@ with counts as (
     select num_seqs from by_count where count = 3
 )
 select pairs.num_seqs, triples.num_seqs, pairs.num_seqs * triples.num_seqs as result
-from pairs join triples on (true)
+from pairs join triples on (true);
 
 -- Part 2
 
@@ -43,7 +43,7 @@ with diffs as (
     where chars1.chr != chars2.chr
     group by 1,2
 )
-select substring(seq.str, 1, diff_pos - 1) || substring(seq.str, diff_pos + 1)
+select substring(seq.str, 1, diff_pos - 1) || substring(seq.str, diff_pos + 1) as result
 from diffs
 join day2 seq on (seq.id = diffs.id1)
 where diffs.diffs = 1;
