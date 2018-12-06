@@ -1,4 +1,4 @@
--- Bash runtime: 11m33.827s
+-- Bash runtime: 1m31.803s
 
 -- Setup
 -- Make a big regexp of alternating case letters.
@@ -21,7 +21,7 @@ with recursive recurse(str) as (
     select str
     from day5
 union -- Stop on duplicate!
-    select regexp_replace(recurse.str, alternating.str, '') as str
+    select regexp_replace(recurse.str, alternating.str, '', 'g') as str
     from recurse
     join alternating on (true)
 )
@@ -39,7 +39,7 @@ with recursive recurse(str) as (
     select str
     from removed
 union -- Stop on duplicate!
-    select regexp_replace(recurse.str, alternating.str, '') as str
+    select regexp_replace(recurse.str, alternating.str, '', 'g') as str
     from recurse
     join alternating on (true)
 )
