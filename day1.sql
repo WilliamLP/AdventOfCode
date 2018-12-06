@@ -1,3 +1,5 @@
+-- Bash run time: 0m0.477s
+
 -- Setup
 
 -- drop table if exists freq;

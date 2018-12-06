@@ -1,3 +1,4 @@
+-- Bash run time: 0m1.440s
 
 -- Parsing
 create temporary table parsed as

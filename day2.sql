@@ -1,3 +1,5 @@
+-- Bash run time: 0m0.230s
+
 -- Setup
 
 -- Table with one row for every character in every string
