@@ -13,34 +13,23 @@ with combos as (
 select string_agg(str, '|') as str
 from combos;
 
-create temporary table test as (select 'dabAcCaCBAcCcaDA' as str);
-
--- Part 1
--- Recursively reduce the string!
-with recursive recurse(str) as (
-    select str
+-- Recursively reduce a bunch of strings, to get the solution to both parts!
+-- This input table includes the original string, and 26 strings which remove all of a single letter
+create temporary table input as
+    select str, true as is_original
     from day5
-union -- Stop on duplicate!
-    select regexp_replace(recurse.str, alternating.str, '', 'g') as str
+union all
+    select regexp_replace(str, chr(96 + i), '', 'gi') as str, false as is_original
+    from day5
+    join generate_series(1,26) as i on (true);
+
+with recursive recurse(str, is_original) as (
+    select str, is_original from input
+union -- Stop on duplicates!
+    select regexp_replace(recurse.str, alternating.str, '', 'g') as str, is_original
     from recurse
     join alternating on (true)
 )
-select min(length(str))
-from recurse;
-
-
--- Part 2: do this by removing each letter of the alphabet!
-create temporary table removed as
-select regexp_replace(str, chr(96 + i), '', 'gi') as str
-from day5
-join generate_series(1,26) as i on (true);
-
-with recursive recurse(str) as (
-    select str
-    from removed
-union -- Stop on duplicate!
-    select regexp_replace(recurse.str, alternating.str, '', 'g') as str
-    from recurse
-    join alternating on (true)
-)
-select min(length(str)) from recurse;
+select is_original, min(length(str)) as final_length
+from recurse
+group by 1;
