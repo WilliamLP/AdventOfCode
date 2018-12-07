@@ -1,4 +1,4 @@
--- Bash runtime:
+-- Bash runtime: 0m8.775s
 
 -- Setup
 create temporary table parsed as
@@ -20,14 +20,17 @@ from extent
 join generate_series(minx, maxx) as x on (true)
 join generate_series(miny, maxy) as y on (true);
 
+create temporary table dists as
+-- distance from every grid square to each coordinate
+select grid.x, grid.y, parsed.id,
+    abs(parsed.x - grid.x) + abs(parsed.y - grid.y) as dist
+from grid
+join parsed on (true);
+
 -- Part 1
-with dists as (
-    -- distance from every grid square to each coordinate
-    select grid.x, grid.y, parsed.id,
-        abs(parsed.x - grid.x) + abs(parsed.y - grid.y) as dist
-    from grid
-    join parsed on (true)
-), min_dist as (
+
+
+with min_dist as (
     -- Distance to the closest coordinate, per grid square
     select x, y, min(dist) as dist
     from dists
@@ -57,3 +60,12 @@ with dists as (
 select max(area)
 from areas
 where id not in (select id from on_border);
+
+-- Part 2
+with total_dist as (
+    select x, y, sum(dist) as total
+    from dists
+    group by 1,2
+)
+select count(*) from total_dist
+where total < 10000;
