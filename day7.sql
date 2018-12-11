@@ -57,24 +57,25 @@ where todo = '';
 -- Part 2
 
 create temporary table config as
-select 5 as num_workers;
+select 5 as num_workers,
+    60 as time_offset;
 
 -- Divide turn into phases:
---   Queue - pick next available job
+--   Get Next - pick next available job
 --   Dispatch - Give job in queue to a free worker
 --   Tick - Advance time
 --   Update - Update dependencies
 -- Data structure:
 --   phase: current phase
 --   todo: Jobs remaining
---   unmet: Jobs with unmet dependencies
+--   blocked: Jobs with unmet dependencies
 --   done: Jobs done
---   queue: Next job to do
+--   next: Next job to do
 --   worker_jobs: Currently assigned jobs per worker (as string)
 --   worker_time: Currently assigned job time
-with recursive next_step(phase, todo, unmet, done, queue, worker_jobs, worker_time) as (
+with recursive next_step(phase, todo, blocked, done, next, worker_jobs, worker_time) as (
     select
-        'Queue',
+        'Get Next',
         (
             select string_agg(step, '' order by step)
             from steps),
@@ -95,36 +96,36 @@ with recursive next_step(phase, todo, unmet, done, queue, worker_jobs, worker_ti
 union all
     select
         -- phase: Advance to next phase
-        case when phase = 'Queue' then 'Dispatch'  -- Pluck a job if possible => dispatch
-            when phase = 'Dispatch' and (queue = '' or position('.' in worker_jobs) = 0) then 'Tick' -- No job to dispatch => wait
-            when phase = 'Dispatch' then 'Queue' -- Assign queued job to a worker => Try to queue another
+        case when phase = 'Get Next' then 'Dispatch'  -- Pluck a job if possible => dispatch
+            when phase = 'Dispatch' and (next = '' or position('.' in worker_jobs) = 0) then 'Tick' -- No job to dispatch => wait
+            when phase = 'Dispatch' then 'Get Next' -- Assign queued job to a worker => Try to queue another
             when phase = 'Tick' then 'Update' -- Advance clock => Update
-            when phase = 'Update' then 'Queue' -- Refresh dependencies => Try to queue
+            when phase = 'Update' then 'Get Next' -- Refresh dependencies => Try to start another job
             end,
-        -- todo: Move queue here during Dispatch, if a worker is free
-        case when phase = 'Dispatch' and queue != '' and position('.' in worker_jobs) != 0 then replace(todo, queue, '')
+        -- todo: Move next here during Dispatch, if a worker is free
+        case when phase = 'Dispatch' and next != '' and position('.' in worker_jobs) != 0 then replace(todo, next, '')
             else todo end,
-        -- unmet: Recalculate this during Update phase
+        -- blocked: Recalculate this during Update phase
         case when phase = 'Update' then
                 (select coalesce(string_agg(distinct step, '' order by step), '')
                 from parsed
                 where position(depends_on_step in done) = 0)
-            else unmet end,
+            else blocked end,
         -- done: Add finishing jobs here during Tick phase
         case when phase = 'Tick' then
                 done || (select string_agg(case when worker_time[i] - 1 = 0 then
                     substring(worker_jobs, i, 1) else '' end, '')
                     from generate_series(1, length(worker_jobs)) as i)
             else done end,
-        -- queue: Pluck a job from here during Queue phase
-        case when phase = 'Queue' then coalesce(
+        -- next: Pluck a job from here during Get Next phase
+        case when phase = 'Get Next' and position('.' in worker_jobs) != 0 then coalesce(
             (select min(chr) from (select regexp_split_to_table(todo, '') as chr) as chrs
-                where position(chr in unmet) = 0), '')
-            when phase = 'Dispatch' and queue != '' and position('.' in worker_jobs) != 0 then ''
-            else queue end,
-        -- worker_jobs: Move queue to a free worker during Dispatch. Mark worker free during Update
-        case when phase = 'Dispatch' and queue != '' and position('.' in worker_jobs) != 0 then
-                regexp_replace(worker_jobs, '\.', queue)
+                where position(chr in blocked) = 0), '')
+            when phase = 'Dispatch' and next != '' then ''
+            else next end,
+        -- worker_jobs: Move next to a free worker during Dispatch. Mark worker free during Update
+        case when phase = 'Dispatch' and next != '' and position('.' in worker_jobs) != 0 then
+                regexp_replace(worker_jobs, '\.', next)
             when phase = 'Update' then
                 (select string_agg(case when worker_time[i] = 0 then '.' else substring(worker_jobs, i, 1) end, '')
                     from generate_series(1, length(worker_jobs)) as i)
@@ -133,10 +134,11 @@ union all
         case when phase = 'Tick' then
                 (select array_agg(greatest(0, worker_time[i] - 1))
                     from generate_series(1, length(worker_jobs)) as i)
-            when phase = 'Dispatch' and queue != '' then
-                (select array_agg(case when i = position('.' in worker_jobs) then ascii(queue) - 64 + 60
+            when phase = 'Dispatch' and next != '' then
+                (select array_agg(case when i = position('.' in worker_jobs) then ascii(next) - 64 + config.time_offset
                     else worker_time[i] end)
-                    from generate_series(1, length(worker_jobs)) as i)
+                    from generate_series(1, length(worker_jobs)) as i
+                    join config on (true))
             else worker_time end
     from next_step
     where length(done) < (select count(*) from steps)  -- Terminate when we've done all steps
