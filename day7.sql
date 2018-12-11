@@ -4,7 +4,7 @@
 create temporary table parsed as
 with match as (
     select regexp_match(str, '^Step (\w+) must be finished before step (\w+)') as match
-    from day7_test
+    from day7
 )
 select match[1] as depends_on_step, match[2] as step
 from match;
@@ -57,7 +57,7 @@ where todo = '';
 -- Part 2
 
 create temporary table config as
-select 2 as num_workers;
+select 5 as num_workers;
 
 -- Divide turn into phases:
 --   Queue - pick next available job
@@ -134,12 +134,12 @@ union all
                 (select array_agg(greatest(0, worker_time[i] - 1))
                     from generate_series(1, length(worker_jobs)) as i)
             when phase = 'Dispatch' and queue != '' then
-                (select array_agg(case when i = position('.' in worker_jobs) then ascii(queue) - 64
+                (select array_agg(case when i = position('.' in worker_jobs) then ascii(queue) - 64 + 60
                     else worker_time[i] end)
                     from generate_series(1, length(worker_jobs)) as i)
             else worker_time end
     from next_step
     where length(done) < (select count(*) from steps)  -- Terminate when we've done all steps
 )
-select * from next_step;
---select count(*) from next_step where phase = 'Tick';
+--select * from next_step;
+select count(*) from next_step where phase = 'Tick';
