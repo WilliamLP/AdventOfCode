@@ -1,0 +1,76 @@
+  phase   |  todo  | blocked |  done  | next | worker_jobs | worker_time 
+----------+--------+---------+--------+------+-------------+-------------
+ Get Next | ABCDEF | ABDEF   |        |      | ..          | {0,0}
+ Dispatch | ABCDEF | ABDEF   |        | C    | ..          | {0,0}
+ Get Next | ABDEF  | ABDEF   |        |      | C.          | {3,0}
+ Dispatch | ABDEF  | ABDEF   |        |      | C.          | {3,0}
+ Tick     | ABDEF  | ABDEF   |        |      | C.          | {3,0}
+ Update   | ABDEF  | ABDEF   |        |      | C.          | {2,0}
+ Get Next | ABDEF  | ABDEF   |        |      | C.          | {2,0}
+ Dispatch | ABDEF  | ABDEF   |        |      | C.          | {2,0}
+ Tick     | ABDEF  | ABDEF   |        |      | C.          | {2,0}
+ Update   | ABDEF  | ABDEF   |        |      | C.          | {1,0}
+ Get Next | ABDEF  | ABDEF   |        |      | C.          | {1,0}
+ Dispatch | ABDEF  | ABDEF   |        |      | C.          | {1,0}
+ Tick     | ABDEF  | ABDEF   |        |      | C.          | {1,0}
+ Update   | ABDEF  | ABDEF   | C      |      | C.          | {0,0}
+ Get Next | ABDEF  | BDE     | C      |      | ..          | {0,0}
+ Dispatch | ABDEF  | BDE     | C      | A    | ..          | {0,0}
+ Get Next | BDEF   | BDE     | C      |      | A.          | {1,0}
+ Dispatch | BDEF   | BDE     | C      | F    | A.          | {1,0}
+ Get Next | BDE    | BDE     | C      |      | AF          | {1,6}
+ Dispatch | BDE    | BDE     | C      |      | AF          | {1,6}
+ Tick     | BDE    | BDE     | C      |      | AF          | {1,6}
+ Update   | BDE    | BDE     | CA     |      | AF          | {0,5}
+ Get Next | BDE    | E       | CA     |      | .F          | {0,5}
+ Dispatch | BDE    | E       | CA     | B    | .F          | {0,5}
+ Get Next | DE     | E       | CA     |      | BF          | {2,5}
+ Dispatch | DE     | E       | CA     |      | BF          | {2,5}
+ Tick     | DE     | E       | CA     |      | BF          | {2,5}
+ Update   | DE     | E       | CA     |      | BF          | {1,4}
+ Get Next | DE     | E       | CA     |      | BF          | {1,4}
+ Dispatch | DE     | E       | CA     |      | BF          | {1,4}
+ Tick     | DE     | E       | CA     |      | BF          | {1,4}
+ Update   | DE     | E       | CAB    |      | BF          | {0,3}
+ Get Next | DE     | E       | CAB    |      | .F          | {0,3}
+ Dispatch | DE     | E       | CAB    | D    | .F          | {0,3}
+ Get Next | E      | E       | CAB    |      | DF          | {4,3}
+ Dispatch | E      | E       | CAB    |      | DF          | {4,3}
+ Tick     | E      | E       | CAB    |      | DF          | {4,3}
+ Update   | E      | E       | CAB    |      | DF          | {3,2}
+ Get Next | E      | E       | CAB    |      | DF          | {3,2}
+ Dispatch | E      | E       | CAB    |      | DF          | {3,2}
+ Tick     | E      | E       | CAB    |      | DF          | {3,2}
+ Update   | E      | E       | CAB    |      | DF          | {2,1}
+ Get Next | E      | E       | CAB    |      | DF          | {2,1}
+ Dispatch | E      | E       | CAB    |      | DF          | {2,1}
+ Tick     | E      | E       | CAB    |      | DF          | {2,1}
+ Update   | E      | E       | CABF   |      | DF          | {1,0}
+ Get Next | E      | E       | CABF   |      | D.          | {1,0}
+ Dispatch | E      | E       | CABF   |      | D.          | {1,0}
+ Tick     | E      | E       | CABF   |      | D.          | {1,0}
+ Update   | E      | E       | CABFD  |      | D.          | {0,0}
+ Get Next | E      |         | CABFD  |      | ..          | {0,0}
+ Dispatch | E      |         | CABFD  | E    | ..          | {0,0}
+ Get Next |        |         | CABFD  |      | E.          | {5,0}
+ Dispatch |        |         | CABFD  |      | E.          | {5,0}
+ Tick     |        |         | CABFD  |      | E.          | {5,0}
+ Update   |        |         | CABFD  |      | E.          | {4,0}
+ Get Next |        |         | CABFD  |      | E.          | {4,0}
+ Dispatch |        |         | CABFD  |      | E.          | {4,0}
+ Tick     |        |         | CABFD  |      | E.          | {4,0}
+ Update   |        |         | CABFD  |      | E.          | {3,0}
+ Get Next |        |         | CABFD  |      | E.          | {3,0}
+ Dispatch |        |         | CABFD  |      | E.          | {3,0}
+ Tick     |        |         | CABFD  |      | E.          | {3,0}
+ Update   |        |         | CABFD  |      | E.          | {2,0}
+ Get Next |        |         | CABFD  |      | E.          | {2,0}
+ Dispatch |        |         | CABFD  |      | E.          | {2,0}
+ Tick     |        |         | CABFD  |      | E.          | {2,0}
+ Update   |        |         | CABFD  |      | E.          | {1,0}
+ Get Next |        |         | CABFD  |      | E.          | {1,0}
+ Dispatch |        |         | CABFD  |      | E.          | {1,0}
+ Tick     |        |         | CABFD  |      | E.          | {1,0}
+ Update   |        |         | CABFDE |      | E.          | {0,0}
+(72 rows)
+
