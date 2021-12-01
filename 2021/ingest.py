@@ -6,7 +6,7 @@ import sys
 fname = sys.argv[1]
 tname = fname.split('.')[0]
 
-conn = psycopg2.connect(host='localhost',database='postgres',user='will')
+conn = psycopg2.connect(host='localhost',database='aoc2021',user='wparker')
 cur = conn.cursor()
 
 cur.execute('create table {} (id serial primary key, str text)'.format(tname))
