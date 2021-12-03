@@ -30,13 +30,13 @@ WITH RECURSIVE array_reduction(next_pos, oxygen, scrubber) AS (
     UNION ALL
     SELECT next_pos+1,
         (SELECT array_agg(elem) FROM (
-                SELECT elem
-                FROM unnest(oxygen) AS elem
-                WHERE substring(elem FROM next_pos FOR 1) = (
-                    SELECT round(avg(
-                        substring(elem2 FROM next_pos FOR 1)::INT))::CHAR
-                    FROM unnest(oxygen) AS elem2
-                )
+            SELECT elem
+            FROM unnest(oxygen) AS elem
+            WHERE substring(elem FROM next_pos FOR 1) = (
+                SELECT round(avg(
+                    substring(elem2 FROM next_pos FOR 1)::INT))::CHAR
+                FROM unnest(oxygen) AS elem2
+            )
         ) AS filtered),
         (SELECT array_agg(elem) FROM (
             SELECT elem
@@ -51,7 +51,7 @@ WITH RECURSIVE array_reduction(next_pos, oxygen, scrubber) AS (
             )
         ) AS filtered)
     FROM array_reduction
-    WHERE array_length(oxygen, 1) > 1
+    WHERE next_pos <= 12
 ), to_decimal AS (
     SELECT oxygen[1]::BIT(12)::INT AS oxygen,
         scrubber[1]::BIT(12)::INT AS scrubber
