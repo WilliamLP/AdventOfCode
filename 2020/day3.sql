@@ -12,7 +12,7 @@ WITH width AS (
 SELECT COUNT(*) FROM pos
 WHERE substring(str FROM pos FOR 1) = '#';
 
--- Part 1
+-- Part 2
 WITH width AS (
     SELECT char_length(str) AS width
     FROM day3
