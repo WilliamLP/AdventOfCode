@@ -1,4 +1,3 @@
--- 970,916 -> 100,46
 WITH parsed AS (
     SELECT regexp_match(str, '^(\d+),(\d+) -> (\d+),(\d+)') AS coord FROM day5
 ), coords AS (
