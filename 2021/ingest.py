@@ -9,7 +9,7 @@ tname = fname.split('.')[0]
 conn = psycopg2.connect(host='localhost',database='aoc2021',user='wparker')
 cur = conn.cursor()
 
-cur.execute('create table {} (id serial primary key, str text)'.format(tname))
+cur.execute('create table {} (row_id serial primary key, str text)'.format(tname))
 
 with open(fname) as f:
     for line in f:
