@@ -3,6 +3,7 @@ import heapq
 def find_closest(n, weights, dists, heap):
     while True:
         dist, i, j = heapq.heappop(heap)
+        # Pull an unstamped node, we may pull and discard longer paths to one already stamped
         if dists[i][j] == -1:
             break
 
@@ -29,8 +30,7 @@ def main():
         weights.append(row)
 
     dists = [[-1 for i in range(n)] for j in range(n)]
-    dists[0][0] = 0
-    heap = [(weights[1][0], 1, 0), (weights[0][1], 0, 1)]
+    heap = [(0, 0, 0)]
     heapq.heapify(heap)
 
     steps = 0
