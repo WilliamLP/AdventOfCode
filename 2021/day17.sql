@@ -19,7 +19,3 @@ WITH RECURSIVE goals AS (
         GROUP BY 1,2) AS dist
 )
 SELECT * FROM part1, part2;
-
-
-
-
