@@ -30,7 +30,6 @@ class Snailfish:
 
     def add(self, fish):
         res = Snailfish(False, self, fish)
-
         while True:
             while res.explode():
                 pass
@@ -44,12 +43,10 @@ class Snailfish:
             res.append(self.left)
         else:
             res.extend(self.left.all_numbers())
-
         if self.right.is_number:
             res.append(self.right)
         else:
             res.extend(self.right.all_numbers())
-
         return res
 
     def find_explode(self, level=0):
@@ -65,7 +62,6 @@ class Snailfish:
             exploded_right = self.right.find_explode(level + 1)
             if exploded_right:
                 return exploded_right
-        return None
 
     def explode(self):
         explode_node = self.find_explode(0)
@@ -79,8 +75,6 @@ class Snailfish:
             explode_node.is_number = True
             explode_node.number = 0
             return True
-        else:
-            return False
 
     def find_reduce(self):
         # Search for an reducing node, which is a number > 9
@@ -96,7 +90,6 @@ class Snailfish:
         reduced_right = self.right.find_reduce()
         if reduced_right:
             return reduced_right
-        return None
 
     def reduce(self):
         reduce_node = self.find_reduce()
@@ -105,25 +98,17 @@ class Snailfish:
             reduce_node.left = Snailfish(True, reduce_node.number // 2)
             reduce_node.right = Snailfish(True, (reduce_node.number + 1) // 2)
             return True
-        else:
-            return False
 
     def magnitude(self):
-        if self.is_number:
-            return self.number
-        else:
-            return self.left.magnitude() * 3 + self.right.magnitude() * 2
+        return self.number if self.is_number else self.left.magnitude() * 3 + self.right.magnitude() * 2
 
 def part_1():
     fish_strs = [str.strip() for str in open('day18_test.txt')]
     fishes = [Snailfish.parse(fish_str)[0] for fish_str in fish_strs]
 
-    sum = None
-    for fish in fishes:
-        if sum:
-            sum = sum.add(fish)
-        else:
-            sum = fish
+    sum = fishes[0]
+    for fish in fishes[1:]:
+        sum = sum.add(fish)
     print(f'Magnitude: {sum.magnitude()}')
 
 def part_2():
