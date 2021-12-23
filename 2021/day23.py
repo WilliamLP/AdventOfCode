@@ -1,4 +1,3 @@
-import sys
 import heapq
 
 HALL_CELLS = [15, 16, 18, 20, 22, 24, 25]
@@ -107,5 +106,3 @@ def main():
             heapq.heappush(heap, (total_dist + dist, new_map))
 
 main()
-
-# {'#############\n#...........#\n###B#C#B#D###\n  #D#C#B#A#\n  #D#B#A#C#\n  #A#D#C#A#\n  #########': 0}
