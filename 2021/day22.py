@@ -59,7 +59,7 @@ def count_points(volumes):
 
 def main():
     volumes = []
-    for str in open('day22.txt'):
+    for str in open('day22_test2.txt'):
         m = re.match('^(off|on) x=(-?\d+)\.\.(-?\d+),y=(-?\d+)\.\.(-?\d+),z=(-?\d+)\.\.(-?\d+)', str)
         volumes.append ({'state': m[1] == 'on',
                    'x1': int(m[2]), 'x2': int(m[3]),
