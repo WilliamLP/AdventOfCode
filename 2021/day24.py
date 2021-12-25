@@ -53,7 +53,6 @@ def find(chunks, pos, z):
                 print(f'Min z {exec_result}')
                 MIN_Z = abs(exec_result)
             if exec_result == 0:
-                print('FOUND 0')
                 found = [i]
                 break
             else:
@@ -61,7 +60,6 @@ def find(chunks, pos, z):
         else:
             new_found = find(chunks, pos + 1, exec_result)
             if new_found:
-                print('NEW FOUND')
                 found = [i] + new_found
                 break
 
