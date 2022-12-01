@@ -12,4 +12,4 @@ SELECT MAX(total_calories) AS part_1
 FROM grouped
 UNION ALL
 SELECT SUM(total_calories) AS part_2
-FROM (SELECT * FROM GROUPED ORDER BY total_calories DESC LIMIT 3)
+FROM (SELECT * FROM grouped ORDER BY total_calories DESC LIMIT 3)
