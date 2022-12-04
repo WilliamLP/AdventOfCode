@@ -1,5 +1,5 @@
 WITH parsed AS (
-    -- 1, 2, 3 => Rock, Paper, Scissors || Lost, Draw, Win
+    -- 1, 2, 3 => Rock, Paper, Scissors || Lose, Draw, Win
     SELECT ascii(substr(input, 1, 1)) - ascii('A') + 1 AS opp_move,
         ascii(substr(input, 3, 1)) - ascii('X') + 1 AS my_move
     FROM day2
@@ -11,7 +11,7 @@ WITH parsed AS (
             ELSE 0
         END AS score1,
         CASE WHEN my_move = 1 THEN IF(opp_move = 1, 3, opp_move - 1) -- Lose
-            WHEN my_move = 2 THEN opp_move
+            WHEN my_move = 2 THEN opp_move -- Draw
             WHEN my_move = 3 THEN IF(opp_move = 3, 1, opp_move + 1) -- Win
         END AS my_move2,
         my_move * 3 - 3 AS score2
