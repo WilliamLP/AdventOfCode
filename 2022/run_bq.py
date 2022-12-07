@@ -22,7 +22,7 @@ def main():
         run(client, f'CREATE OR REPLACE TABLE {tname} (row_num int, input string)')
 
         with open(fname) as f:
-            rows = [line.strip() for line in f]
+            rows = [line.rstrip() for line in f]
         print(f'INSERTING {len(rows)} ROWS INTO {DATASET}.{tname}')
 
         # sql += ', '.join([f"({i}, '{val}')" for i, val in enumerate(vals)])
