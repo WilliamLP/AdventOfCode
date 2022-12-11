@@ -4,12 +4,12 @@ WITH RECURSIVE monkey_input AS (
     GROUP BY 1
 ), monkey_parsed AS (
     SELECT monkey_num, input, regexp_match(input,
-                                           '^Monkey (\d):\|' ||
-                                               '  Starting items: ([^|]+)\|' ||
-                                               '  Operation: new = old (.) (\w+)\|' ||
-                                               '  Test: divisible by (\d+)\|' ||
-                                               '    If true: throw to monkey (\d)\|' ||
-                                               '    If false: throw to monkey (\d)') AS match
+       '^Monkey (\d):\|' ||
+       '  Starting items: ([^|]+)\|' ||
+       '  Operation: new = old (.) (\w+)\|' ||
+       '  Test: divisible by (\d+)\|' ||
+       '    If true: throw to monkey (\d)\|' ||
+       '    If false: throw to monkey (\d)') AS match
     FROM monkey_input
 ), monkey_ops AS (
     SELECT match[1]::INT AS monkey,
