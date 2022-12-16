@@ -39,7 +39,6 @@ def find_max_flow(valves, cur_valve_id1, clock1, cur_valve_id2, clock2, visited,
         if clock2 == time_inc:
             new_flow_rate += valves[cur_valve_id2]['flow']
 
-        # print('flow', time, time + time_inc, flow_rate * time_inc)
         return flow_rate * time_inc + find_max_flow(valves, cur_valve_id1, clock1 - time_inc,
             cur_valve_id2, clock2 - time_inc, visited, time + time_inc, new_flow_rate)
 
@@ -70,7 +69,8 @@ def find_max_flow(valves, cur_valve_id1, clock1, cur_valve_id2, clock2, visited,
             flow_rate))
         visited.remove(adj_valve_id)
 
-    # if we fall out of this loop, we are waiting until the end
+    # if we fall out of this loop, we just wait until the end,
+    # but we still might need to process the other worker
     time_inc = MAX_TIME - time
     max_flow = max(max_flow, find_max_flow(
         valves,
@@ -85,4 +85,4 @@ def find_max_flow(valves, cur_valve_id1, clock1, cur_valve_id2, clock2, visited,
     return max_flow
 
 res = find_max_flow(valves, 'AA', 0, 'AA', 0, set(['AA']), 0, 0)
-print(res)
+print('Part 2', res)
