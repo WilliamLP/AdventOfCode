@@ -13,7 +13,7 @@ for str in open('day14.txt'):
 
 grid = [[' '] * (maxy + 3) for i in range(2 * maxx + 1)]
 def sign(i):
-    if i > 1:
+    if i > 0:
         return 1
     if i == 0:
         return 0
