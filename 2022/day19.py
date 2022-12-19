@@ -12,13 +12,6 @@ def max_geodes(time, inventory, bots):
     if memo_key in memo:
         return memo[memo_key]
 
-    # check if this position is dominated by another one
-    #for prev_memo_key in memo:
-    #    if all(memo_key[i] <= prev_memo_key[i] for i in range(8)):
-    #        print('Total domination')
-    #        memo[memo_key] = 0
-    #        return 0
-
     next_inventory = inventory.copy()
     next_inventory[0] += bots[0]
     next_inventory[1] += bots[1]
@@ -88,4 +81,5 @@ for i, line in enumerate(open('day19.txt')):
         print(f'Product now {product}\n')
         if i == 2:
             break
+
 print('Part 1', part1)
