@@ -105,4 +105,4 @@ while True:
         break
     block_type = (block_type + 1) % len(blocks)
 
-print('Part 1', bottom_height + y_offset)
+print('Part 2', bottom_height + y_offset)
