@@ -12,7 +12,7 @@ cur.execute('create table {} (row_num serial primary key, input text)'.format(tn
 
 with open(tname + '.txt') as f:
     for line in f:
-        cur.execute("insert into {} (input) select '{}'".format(tname, line.rstrip()))
+        cur.execute("insert into {} (input) select '{}'".format(tname, line.rstrip().replace('\'', '\'\'')))
 
 cur.close()
 conn.commit()
