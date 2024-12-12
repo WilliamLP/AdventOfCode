@@ -37,23 +37,46 @@ with recursive bounds as (
     order by start, array_length(plants, 1) desc
 ), regions as (
     -- deduplicate
-    select plants, min(start) as start
+    select plants, min(ch) as ch, min(start) as start
     from largest
     group by 1
-), adj_counts as (
-    select id, count(*) as adj_count
+), plant_perims as (
+    select id,
+        a_up is null as p_up,
+        a_down is null as p_down,
+        a_left is null as p_left,
+        a_right is null as p_right
     from plants
-    join adjs on (id1 = id)
-    group by 1
+    left join adjs a_up on (a_up.id1 = id and a_up.di = -1)
+    left join adjs a_down on (a_down.id1 = id and a_down.di = 1)
+    left join adjs a_left on (a_left.id1 = id and a_left.dj = -1)
+    left join adjs a_right on (a_right.id1 = id and a_right.dj = 1)
+), plant_perims2 as (
+    select pp.id,
+        pp.p_up and not coalesce(pp_left.p_up, false) as p2_up,
+        pp.p_down and not coalesce(pp_left.p_down, false) as p2_down,
+        pp.p_left and not coalesce(pp_up.p_left, false) as p2_left,
+        pp.p_right and not coalesce(pp_up.p_right, false) as p2_right
+    from plant_perims pp
+    left join adjs a_up on (a_up.id1 = pp.id and a_up.di = -1)
+    left join adjs a_down on (a_down.id1 = pp.id and a_down.di = 1)
+    left join adjs a_left on (a_left.id1 = pp.id and a_left.dj = -1)
+    left join adjs a_right on (a_right.id1 = pp.id and a_right.dj = 1)
+    left join plant_perims pp_up on (pp_up.id = a_up.id2)
+    left join plant_perims pp_down on (pp_down.id = a_down.id2)
+    left join plant_perims pp_left on (pp_left.id = a_left.id2)
+    left join plant_perims pp_right on (pp_left.id = a_right.id2)
 ), region_perims as (
-    select start, sum(4 - coalesce(adj_count, 0)) as perim
+    select start, min(ch),
+        sum(p_up::int + p_down::int + p_left::int + p_right::int) as p1,
+        sum(p2_up::int + p2_down::int + p2_left::int + p2_right::int) as p2
     from regions
     cross join unnest(plants) as id
-    left join adj_counts using(id)
+    join plant_perims using(id)
+    join plant_perims2 using(id)
     group by 1
-), part1 as (
-    select sum(array_length(plants, 1) * perim) as part1
-    from regions
-    join region_perims using(start)
 )
-select * from part1;
+select sum(p1 * array_length(plants, 1)) as part1,
+    sum(p2 * array_length(plants, 1)) as part2
+from regions
+join region_perims using(start);
