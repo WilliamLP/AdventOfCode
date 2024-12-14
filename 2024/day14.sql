@@ -1,5 +1,5 @@
 with dims as (
-    select 101 as width, 103 as height, 100 as time, 100000 as max_t
+    select 101 as width, 103 as height, 100 as time, 10000 as max_t
 ), parsed as (
     select regexp_matches(input, 'p=(-?\d+),(-?\d+) v=(-?\d+),(-?\d+)') bot
     from day14
@@ -20,7 +20,7 @@ with dims as (
 ), moved_aggr as (
     select t, x, y, count(*) as count from moved group by 1, 2, 3
 ), part2 as (  -- Generate picture for inspection
-    select t.t, string_agg(coalesce(m.count::text, '.'), '') as row
+    select t.t, string_agg(coalesce(m.count::text, '.'), '' order by x.x) as row
     from dims
     cross join generate_series(1, max_t) t(t)
     cross join generate_series(0, width - 1) x(x)
