@@ -5,7 +5,7 @@ import sys
 
 tname = input('Filename?\n')
 
-conn = psycopg2.connect(host='localhost', database='aoc2024', user='williamlp', password='williamlp')
+conn = psycopg2.connect(host='localhost', database='aoc2024', user='postgres', password='admin', port=5433)
 cur = conn.cursor()
 
 cur.execute('create table {} (row_num serial primary key, input text)'.format(tname))
