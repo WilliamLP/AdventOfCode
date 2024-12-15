@@ -25,7 +25,7 @@ with recursive divider as (
     select 1 as t,
         (select i from map_cells where ch = '@') as i,
         (select j from map_cells where ch = '@') as j,
-        map, '' as _path, 0 as _di, 0 as _dj, 0 as _k
+        map
     from start_map
     union all
     select t + 1,
@@ -42,8 +42,7 @@ with recursive divider as (
                 from generate_series(1, width) as mj
             order by mi))
             from bounds, generate_series(1, height) as mi
-        ) end,
-        path, di, dj, free_k
+        ) end
     from states
     join moves using(t)
     cross join bounds
